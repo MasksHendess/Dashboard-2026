@@ -131,19 +131,19 @@ def linje(df, x, y, titel):
  
 # Klickbar stapelgraf per månad - ett klick filtrerar alla andra grafer
 def manadsgraf(df, y, titel):
-    klick = alt.selection_point(name="klick", fields=["manad"])
+    klick = alt.selection_point(name="klick", fields=["orderDatum"])
     with st.container(border=True):
         st.markdown(f"**{titel}**  ·  klicka på en månad · klicka på en tom yta för att visa alla")
         if df.empty:
             return
-        df = df.groupby("manad", as_index=False)[y].sum()
+        df = df.groupby("orderDatum", as_index=False)[y].sum()
         graf = alt.Chart(df).mark_bar(
             color=ACCENT, cornerRadiusTopLeft=4, cornerRadiusTopRight=4
         ).encode(
-            x=alt.X("manad", title=None, axis=alt.Axis(labelAngle=0)),
+            x=alt.X("orderDatum", title=None, axis=alt.Axis(labelAngle=0)),
             y=alt.Y(y, title=None),
             opacity=alt.condition(klick, alt.value(1), alt.value(0.35)),
-            tooltip=["manad", y],
+            tooltip=["orderDatum", y],
         ).add_params(klick).properties(height=120)
         st.altair_chart(graf, use_container_width=True,
                         on_select="rerun", key="manadsgraf")
@@ -209,7 +209,7 @@ k4.metric("Antal Kund ordrar över 23K", tal(forsenade))
  
  
 # Klickbar månadsgraf
-manadsgraf(alla_manader, y="intakt", titel="Intäkt per månad")
+manadsgraf(segment, y="spenderat_belopp", titel="Intäkt per månad")
  
  
 # Rad 1: två grafer 
