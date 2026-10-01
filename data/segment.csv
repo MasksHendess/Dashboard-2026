@@ -1,0 +1,9 @@
+segment,antal_ordrar,spenderat_belopp,ordertyp
+Privat,198,757900.00,Standard
+Student,184,680300.00,Standard
+Företag,114,443000.00,Standard
+Privat,39,671200.00,Express
+B2B,39,169100.00,Standard
+Student,38,663500.00,Express
+Företag,26,489900.00,Express
+B2B,6,90900.00,Express

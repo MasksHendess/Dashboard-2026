@@ -166,7 +166,10 @@ klass    = las("intakt_per_status.csv")
 status   = las("bokningar_per_status.csv")
 per_dag  = las("flygningar_per_dag.csv")
 toppen   = las("topp_passagerare.csv")
- 
+#mina csv
+kunder = las("kunder.csv") 
+storkunder = las("storkunder.csv")
+segment = las("segment.csv")
  
 # Filter: månaden man klickat på i månadsgrafen - gäller ALLA grafer
 alla_manader = klass            # sparas ofiltrerad, månadsgrafen ska alltid visa alla
@@ -182,24 +185,27 @@ klass   = valj_manad(klass)
 status  = valj_manad(status)
 per_dag = valj_manad(per_dag)
 toppen  = valj_manad(toppen)
- 
+#mina csv
+kunder = valj_manad(kunder)
+storkunder = valj_manad(storkunder)
+segment = valj_manad(segment)
  
 # Rubrik
-st.title("SAS – bokningsöversikt")
-st.caption(f"Data från MySQL · {'mars–maj 2026' if vald == 'Alla' else vald}")
+st.title("Boozt – Kund orders översikt")
+st.caption(f"Data från MySQL · {'Boozt lager DB - 2026' if vald == 'Alla' else vald}")
  
  
 #  Nyckeltal: fyra stora siffror
-intakt     = summa(klass, "intakt")
-bokningar  = summa(klass, "antal_bokningar")
-flygningar = summa(per_dag, "flygningar")
-forsenade  = summa(per_dag, "forsenade")
+intakt     = summa(kunder, "total_amount_spent")
+bokningar  = summa(kunder, "total_orders")
+flygningar = summa(storkunder, "spenderat_belopp")
+forsenade  = summa(storkunder, "antal_ordrar")
  
 k1, k2, k3, k4 = st.columns(4)
-k1.metric("Total intäkt", tal(intakt, " kr"))
-k2.metric("Bokningar",    tal(bokningar))
-k3.metric("Flygningar",   tal(flygningar))
-k4.metric("Andel försenade", f"{forsenade / flygningar:.0%}" if flygningar else "–")
+k1.metric("Spenderat Belopp (alla Kunder)", tal(intakt, " kr"))
+k2.metric("Antal Kund ordrar",    tal(bokningar))
+k3.metric("Spenderat Belopp (Kund ordrar över 23K)",   tal(flygningar, " kr"))
+k4.metric("Antal Kund ordrar över 23K", tal(forsenade))
  
  
 # Klickbar månadsgraf
@@ -209,17 +215,18 @@ manadsgraf(alla_manader, y="intakt", titel="Intäkt per månad")
 # Rad 1: två grafer 
 v, h = st.columns(2)
 with v:
-    stapel(klass, x="ticket_class", y="intakt", titel="Intäkt per biljettklass")
+    stapel(segment, x="ordertyp", y="spenderat_belopp", titel="Intäkt per ordertyp")
 with h:
-    stapel(status, x="status", y="bokningar", titel="Bokningar per flygstatus")
+    stapel(segment, x="segment", y="antal_ordrar", titel="Antal ordrar per Segment")
  
  
 # Rad 2: två grafer 
 v, h = st.columns(2)
 with v:
     linje(per_dag, x="datum", y="flygningar", titel="Flygningar per dag")
-with h:
-    liggande(toppen, x="passagerare", y="spenderat", titel="Topp 10 kunder – spenderat belopp")
+with h:   
+    liggande(storkunder, x="kund", y="spenderat_belopp", titel="Topp 10 kunder – spenderat belopp")
+
  
  
  
