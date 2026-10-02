@@ -223,7 +223,7 @@ with h:
 # Rad 2: två grafer 
 v, h = st.columns(2)
 with v:
-    linje(per_dag, x="datum", y="flygningar", titel="Flygningar per dag")
+    linje(segment, x="orderDatum", y="antal_ordrar", titel="Orders per dag")
 with h:   
     liggande(storkunder, x="kund", y="spenderat_belopp", titel="Topp 10 kunder – spenderat belopp")
 
